@@ -29,7 +29,7 @@ router.post("/login", (req, res) => {
       return res.json(2);
     }
     if (bcrypt.compareSync(password, data.password) === false) {
-      return res.json(3);
+      return res.status(401).send("authentication failed");
     }
     return res.json(data);
   })
@@ -43,7 +43,7 @@ router.get("/test", (req, res) => {
       return res.json("No results found");
     }
     if (bcrypt.compareSync(password, data.password) === false) {
-      return res.json("Invalid Password");
+      return res.status(401).send("authentication failed");
     }
     return res.json(data);
   })
