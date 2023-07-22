@@ -12,6 +12,9 @@ router.post("/signup", (req, res) => {
     password: encryptedPassword,
   };
   getUserWithEmail(req.body.email).then(data => {
+    if (data) {
+      return res.send("This email is already registered!");
+    }
     if (!data) {
       addUser(details);
     }
