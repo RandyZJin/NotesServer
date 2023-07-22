@@ -9,7 +9,7 @@ const authRoutes = require("./routes/auth.js");
 
 app.use("/api/auth", authRoutes);
 
-app.get("/", function(req,res){
+app.get("/", function(req, res){
   res.send("Hello World!");
 });
 
