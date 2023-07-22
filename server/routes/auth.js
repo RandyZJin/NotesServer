@@ -5,7 +5,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 
 router.post("/signup", (req, res) => {
-  const encryptedPassword = bcrypt.hashSync(req.body.password, 12)
+  const encryptedPassword = bcrypt.hashSync(req.body.password, 10)
   const details = {
     name: req.body.name,
     email: req.body.email.toLowerCase(),
@@ -31,14 +31,15 @@ router.post("/login", (req, res) => {
     if (bcrypt.compareSync(password, data.password) === false) {
       return res.status(401).send("authentication failed");
     }
-    return res.json(data);
+    console.log("log in success");
+    return res.json({id: data.id, name: data.name, email: data.email});
   })
 });
 
 router.get("/test", (req, res) => {
   const password = "password";
   // console.log("password: ", bcrypt.hashSync("password", 10))
-  getUserWithEmail("123@test.com").then((data) => {
+  getUserWithEmail(req.body.email).then((data) => {
     if (!data) {
       return res.json("No results found");
     }
@@ -50,7 +51,7 @@ router.get("/test", (req, res) => {
 })
 
 router.get("/", (req, res) => {
-  getUserWithEmail("123@test.com").then(data => {
+  getUserWithEmail("mike@test.com").then(data => {
     res.json(data);
     if (!data) {
       console.log("empty");
