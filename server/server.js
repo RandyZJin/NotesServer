@@ -5,7 +5,6 @@ const app = express();
 const port = 3000;
 const secretRefreshKey = process.env.REFRESH_KEY;
 const jwt = require('jsonwebtoken');
-const authenticateToken = require("./jwtAuth");
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
@@ -36,7 +35,6 @@ app.post('/refresh-token', (req, res) => {
     if (err) {
       return res.sendStatus(403);
     }
-		// { userId: data.id, name: data.name, email: data.email }
     const newAccessToken = jwt.sign({ userId: decoded.userId, name: decoded.name, email: decoded.email }, process.env.AUTH_KEY, { expiresIn: '1h' });
 
     res.json({ accessToken: newAccessToken });

@@ -19,6 +19,7 @@ Mocha and Chai are used for automated tests for both function and integration te
 - express-rate-limit : Used to impose a request limit.
 - jsonwebtoken: Used to issue and authenticate tokens for access.
 - pg : Used for integration with PSQL.
+- nyc: Used for test coverage reporting.
 
 
 ## Setup
@@ -36,6 +37,7 @@ The default port is 3000;
 
 ```sh
 npm test
+npm run test-with-coverage
 ```
 
-Some tests will require the server to be running.
+Some tests will require the server to be running. Running "npm test" will only run the tests but "npm run test-with-coverage" will generate a coverage map.
