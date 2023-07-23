@@ -1,7 +1,7 @@
 const express = require("express");
 const { getNotesForUser, getNotesById } = require("../db/queries/getNotes");
 const { addNote } = require("../db/queries/addNote");
-const { updateNote } = require("../db/queries/updateNote");
+const { updateNote, shareNote } = require("../db/queries/updateNote");
 const { removeNote } = require("../db/queries/removeNote");
 const router = express.Router();
 
@@ -11,6 +11,17 @@ router.delete("/:id", (req, res) => {
   .then(data => {
     res.send("Deleted!")
   })
+});
+
+router.post("/:id/share", (req, res) => {
+  shareNote(req.params.id)
+  .then((data) => {
+    if (!data) {
+      res.send("no notes found for user");
+    } else {
+      res.json(data);
+    }
+  });
 });
 
 router.put("/:id", (req, res) => {

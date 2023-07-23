@@ -17,4 +17,22 @@ const updateNote = function (note) {
     });
 };
 
-module.exports = { updateNote };
+const shareNote = function (noteId) {
+  const queryString =`
+  UPDATE notes
+  SET shared = TRUE
+  WHERE id = $1
+  RETURNING *
+  ;
+  `;
+return db
+  .query(queryString, [
+    noteId
+  ])
+  .then((result) => {
+    return result.rows[0];
+  });
+};
+
+
+module.exports = { updateNote, shareNote };
