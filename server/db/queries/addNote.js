@@ -5,6 +5,7 @@ const addNote = function (userID, note) {
     INSERT INTO notes (owner_id, contents)
     VALUES
     ($1, $2)
+    RETURNING *
     ;
     `;
   return db

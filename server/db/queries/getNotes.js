@@ -28,7 +28,7 @@ const getNotesById = function (userID, noteId) {
       if (result.rows.length === 0) {
         return null;
       }
-      return result.rows.filter(note => note.id === Number(noteId));
+      return result.rows.filter(note => note.id === Number(noteId))[0];
     });
 };
 
