@@ -9,10 +9,11 @@ const authenticateToken = require("../jwtAuth");
 
 router.delete("/:id", authenticateToken, (req, res) => {
   let userID = req.user.userId;
-  removeNote(userID, req.body.noteId)
+  removeNote(userID, req.params.id)
   .then(data => {
-    res.send("Deleted!")
+    res.json(data);
   })
+  .catch(err => console.log(err));
 });
 
 router.post("/:id/share", authenticateToken, (req, res) => {
@@ -29,7 +30,6 @@ router.post("/:id/share", authenticateToken, (req, res) => {
 
 router.put("/:id", authenticateToken, (req, res) => {
   let userID = req.user.userId;
-  console.log(req.body, req.params.id)
   const note = {
     id: req.params.id,
     contents: req.body.note
