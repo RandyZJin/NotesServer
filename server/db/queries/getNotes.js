@@ -16,4 +16,20 @@ const getNotesForUser = function (id) {
     });
 };
 
-module.exports = { getNotesForUser };
+const getNotesById = function (userID, noteId) {
+  const queryString =`
+    SELECT *
+    FROM notes
+    WHERE owner_id = $1
+    `;
+  return db
+    .query(queryString, [userID])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return null;
+      }
+      return result.rows.filter(note => note.id === Number(noteId));
+    });
+};
+
+module.exports = { getNotesForUser, getNotesById };
