@@ -3,6 +3,7 @@ require("dotenv").config();
 const express  = require("express");
 const app = express(); 
 const port = 3000;
+
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
 	max: 100, // requests per window

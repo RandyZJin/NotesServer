@@ -35,7 +35,8 @@ router.post("/login", (req, res) => {
       return res.status(401).send("authentication failed");
     }
     console.log("log in success");
-    return res.json({id: data.id, name: data.name, email: data.email});
+    const currentUser = {id: data.id, name: data.name, email: data.email};
+    return res.json(currentUser);
   })
 });
 
