@@ -1,7 +1,23 @@
 const express = require("express");
 const { getNotesForUser, getNotesById } = require("../db/queries/getNotes");
 const { addNote } = require("../db/queries/addNote");
+const { updateNote } = require("../db/queries/updateNote");
 const router = express.Router();
+
+router.put("/:id", (req, res) => {
+  console.log(req.body, req.params.id)
+  const note = {
+    id: req.params.id,
+    content: req.body.note
+  };
+  updateNote(note).then((data) => {
+    if (!data) {
+      res.send("note saving failed");
+    } else {
+      res.json(data);
+    }
+  });
+});
 
 router.post("/", (req, res) => {
   let userID = 1;
