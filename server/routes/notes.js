@@ -1,5 +1,5 @@
 const express = require("express");
-const { getNotesForUser, getNotesById } = require("../db/queries/getNotes");
+const { getNotesForUser, getNotesById, getSharedNote } = require("../db/queries/getNotes");
 const { addNote } = require("../db/queries/addNote");
 const { updateNote, shareNote } = require("../db/queries/updateNote");
 const { removeNote } = require("../db/queries/removeNote");
@@ -9,10 +9,11 @@ const authenticateToken = require("../jwtAuth");
 
 router.delete("/:id", authenticateToken, (req, res) => {
   let userID = req.user.userId;
-  removeNote(userID, req.body.noteId)
+  removeNote(userID, req.params.id)
   .then(data => {
-    res.send("Deleted!")
+    res.json(data);
   })
+  .catch(err => console.log(err));
 });
 
 router.post("/:id/share", authenticateToken, (req, res) => {
@@ -27,12 +28,22 @@ router.post("/:id/share", authenticateToken, (req, res) => {
   });
 });
 
+router.get("/:id/share", (req, res) => {
+  getSharedNote(req.params.id)
+  .then((data) => {
+    if (!data) {
+      res.send("no notes found");
+    } else {
+      res.json(data);
+    }
+  });
+});
+
 router.put("/:id", authenticateToken, (req, res) => {
   let userID = req.user.userId;
-  console.log(req.body, req.params.id)
   const note = {
     id: req.params.id,
-    content: req.body.note
+    contents: req.body.note
   };
   updateNote(userID, note).then((data) => {
     if (!data) {

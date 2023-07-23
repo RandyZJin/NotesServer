@@ -9,31 +9,35 @@ const secretKey = process.env.AUTH_KEY;
 const secretRefreshKey = process.env.REFRESH_KEY;
 
 router.post("/signup", (req, res) => {
-  const encryptedPassword = bcrypt.hashSync(req.body.password, 10)
+  if (!req.body.name || !req.body.email || !req.body.password) {
+    return res.status(400).send("Fields cannot be empty!");
+  }
+  const encryptedPassword = bcrypt.hashSync(req.body.password, 10);
   const details = {
     name: req.body.name,
     email: req.body.email.toLowerCase(),
     password: encryptedPassword,
   };
-  getUserWithEmail(req.body.email).then(data => {
+  getUserWithEmail(req.body.email.toLowerCase()).then(data => {
     if (data) {
-      return res.send("This email is already registered!");
+      return res.status(400).send("This email is already registered!");
     }
     if (!data) {
       addUser(details);
+      return res.status(200).send("Signup successful")
     }
   })
 });
 
 router.post("/login", (req, res) => {
-  const email = req.body.email;
+  const email = req.body.email.toLowerCase();
   const password = req.body.password;
   if (!email || !password) {
-    return res.json(1);
+    return res.status(400).send("Fields cannot be blank");
   }
   getUserWithEmail(email).then((data) => {
     if (!data) {
-      return res.json(2);
+      return res.status(401).send("authentication failed");
     }
     if (bcrypt.compareSync(password, data.password) === false) {
       return res.status(401).send("authentication failed");

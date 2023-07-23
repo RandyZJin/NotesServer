@@ -11,7 +11,7 @@ const updateNote = function (userId, note) {
     `;
   return db
     .query(queryString, [
-      note.id, note.content, userId
+      note.id, note.contents, userId
     ])
     .then((result) => {
       return result.rows[0];
