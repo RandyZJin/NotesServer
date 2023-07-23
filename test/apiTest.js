@@ -127,9 +127,10 @@ describe("Registration API", function () {
   });
   it("should register successfully with valid credentials", async function () {
     const apiUrl = "http://localhost:3000/api/auth/signup";
+    const randomNum = Math.floor(Math.random() * 10000);
     const requestData = {
       name: "Johnny Test",
-      email: "Johnny15@test.com",
+      email: `Johnny${randomNum}@test.com`,
       password: "password",
     };
 
@@ -147,9 +148,10 @@ describe("Registration API", function () {
 describe("Logging in after registration", function () {
   it("should log in successfully with newly registered account", async function () {
     const registrationUrl = "http://localhost:3000/api/auth/signup";
+    const randomNum = Math.floor(Math.random() * 10000);
     const registrationRequestData = {
       name: "Johnny Test",
-      email: "Johnny25@test.com",
+      email: `Johnny${randomNum}@test.com`,
       password: "password",
     };
 
@@ -167,7 +169,7 @@ describe("Logging in after registration", function () {
     } finally {
       const loginUrl = "http://localhost:3000/api/auth/login";
       const loginRquestData = {
-        email: "joHNny25@test.com",
+        email: `joHNny${randomNum}@test.com`,
         password: "password",
       };
 
@@ -206,7 +208,6 @@ describe("getNotes", function () {
       expect(response.data).to.have.property("accessToken");
       authcode = response.data.accessToken;
     } catch (error) {
-      console.log(error);
       throw new Error(`Login failed: ${error.message}`);
     } finally {
       const noteApi = "http://localhost:3000/api/notes";
