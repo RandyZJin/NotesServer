@@ -2,7 +2,16 @@ const express = require("express");
 const { getNotesForUser, getNotesById } = require("../db/queries/getNotes");
 const { addNote } = require("../db/queries/addNote");
 const { updateNote } = require("../db/queries/updateNote");
+const { removeNote } = require("../db/queries/removeNote");
 const router = express.Router();
+
+router.delete("/:id", (req, res) => {
+  console.log(req.body);
+  removeNote(req.body.noteId)
+  .then(data => {
+    res.send("Deleted!")
+  })
+});
 
 router.put("/:id", (req, res) => {
   console.log(req.body, req.params.id)
