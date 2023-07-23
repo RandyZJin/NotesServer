@@ -9,7 +9,7 @@ const authenticateToken = require("./jwtAuth");
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 100, // requests per window
+	max: 1000, // requests per window
 	standardHeaders: true, 
 	legacyHeaders: false,
 });
