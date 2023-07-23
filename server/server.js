@@ -16,9 +16,11 @@ app.use(limiter);
 
 const authRoutes = require("./routes/auth.js");
 const notesRoutes = require("./routes/notes.js");
+const searchRoutes = require("./routes/search.js");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/notes", notesRoutes);
+app.use("/api/search", searchRoutes);
 
 app.get("/", function(req, res){
   res.send("Hello World!");
