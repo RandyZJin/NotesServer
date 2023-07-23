@@ -4,7 +4,6 @@ const { addNote } = require("../db/queries/addNote");
 const { updateNote, shareNote } = require("../db/queries/updateNote");
 const { removeNote } = require("../db/queries/removeNote");
 const router = express.Router();
-
 const authenticateToken = require("../jwtAuth");
 
 router.delete("/:id", authenticateToken, (req, res) => {

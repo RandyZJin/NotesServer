@@ -5,10 +5,9 @@ const { getUserWithEmail } = require("../server/db/queries/login");
 const { Pool } = require("pg");
 const { addUser } = require("../server/db/queries/addUser");
 const { addNote } = require("../server/db/queries/addNote");
-const { getNotesById, getNotesForUser } = require("../server/db/queries/getNotes");
-const axios = require('axios');
+const { getNotesById, getNotesForUser, getSharedNote } = require("../server/db/queries/getNotes");
 const { removeNote } = require("../server/db/queries/removeNote");
-const { updateNote } = require("../server/db/queries/updateNote");
+const { updateNote, shareNote } = require("../server/db/queries/updateNote");
 const { searchNotes } = require("../server/db/queries/searchNotes");
 
 const dbParams = {
@@ -42,7 +41,6 @@ const testUsers = {
 
 describe("getUserWithEmail", function () {
   it("should return a user with valid email", async function () {
-    // await db.connect();
     const expectedUser = await getUserWithEmail("123@test.com");
     const expectedUserID = "validUser";
     assert.deepEqual(expectedUser, testUsers[expectedUserID]);
@@ -106,7 +104,26 @@ describe("getNotesForUser", function () {
     assert.equal(note.contents, retrievedNotes[1].contents);
   });
 
+  it("should not get a note given an invalid owner id", async function () {
+    const retrievedNotes = await getNotesForUser(999);
+    assert.equal(retrievedNotes, null);
+  });
 });
+
+describe("getSharedNote", function() {
+  it("should get a note with share enabled", async function () {
+    const sharedNote = await getSharedNote(3);
+
+    assert.equal(sharedNote.id, 3);
+    assert.equal(sharedNote.contents, 'Sharing is caring');
+  })
+
+  it("should not get a note with share disabled", async function () {
+    const sharedNote = await getSharedNote(2);
+
+    assert.equal(sharedNote, null);
+  })
+})
 
 describe("addNote", function () {
   it("should add a note", async function () {
@@ -160,6 +177,26 @@ describe("updateNote", function () {
   });
 });
 
+describe("shareNote", function() {
+  it("should update a note's shared status", async function() {
+    const newNote = {
+      owner_id: 2,
+      contents: "I am happy!",
+    };
+    await addNote(2, newNote.contents);
+    const retrievedNewNotes = await getNotesForUser(2);
+    const lastNote = retrievedNewNotes[retrievedNewNotes.length - 1]
+
+    assert.equal(lastNote.contents, newNote.contents);
+    assert.equal(lastNote.shared, false);  // ensure such note is added and sharing is false
+
+    const sharedNote = await shareNote(2, lastNote.id);
+    assert.equal(sharedNote.shared, true);
+    assert.equal(sharedNote.id, lastNote.id);
+    assert.equal(lastNote.contents, sharedNote.contents);
+  })
+})
+
 describe("searchNote", function () {
   it("should find a note containing a keyword", async function () {
     const searchResults = await searchNotes(1, "package lock");
@@ -174,5 +211,3 @@ describe("searchNote", function () {
     assert.equal(searchResults.length, 0);
   });
 });
-
-

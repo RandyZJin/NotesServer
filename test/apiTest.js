@@ -21,6 +21,7 @@ describe("Login API", function () {
       throw new Error(`Login failed: ${error.message}`);
     }
   });
+
   it("should not log in successfully with invalid credentials", async function () {
     const apiUrl = "http://localhost:3000/api/auth/login";
     const requestData = {
@@ -37,6 +38,7 @@ describe("Login API", function () {
       expect(error.response.status).to.be.oneOf([401, 403]);
     }
   });
+
   it("should log in successfully with random capitalizations in email with valid credentials and have tokens issued", async function () {
     const apiUrl = "http://localhost:3000/api/auth/login";
     const requestData = {
@@ -56,6 +58,7 @@ describe("Login API", function () {
       throw new Error(`Login failed: ${error.message}`);
     }
   });
+
   it("should not log in successfully with different cased passwords", async function () {
     const apiUrl = "http://localhost:3000/api/auth/login";
     const requestData = {
@@ -109,6 +112,7 @@ describe("Registration API", function () {
       expect(error.response).to.have.property("data");
     }
   });
+
   it("should not register successfully with empty fields", async function () {
     const apiUrl = "http://localhost:3000/api/auth/signup";
     const requestData = {
@@ -125,6 +129,7 @@ describe("Registration API", function () {
       expect(error.response).to.have.property("data");
     }
   });
+
   it("should register successfully with valid credentials", async function () {
     const apiUrl = "http://localhost:3000/api/auth/signup";
     const randomNum = Math.floor(Math.random() * 10000);
@@ -396,6 +401,7 @@ describe("updateNotes", function () {
       throw new Error(`Posting failed: ${error.message}`);
     }
   });
+
   it("should not update note with improper authentication", async function () {
     const apiUrl = "http://localhost:3000/api/auth/login/";
     const requestData = {

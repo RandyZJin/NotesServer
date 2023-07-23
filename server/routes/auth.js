@@ -42,7 +42,6 @@ router.post("/login", (req, res) => {
     if (bcrypt.compareSync(password, data.password) === false) {
       return res.status(401).send("authentication failed");
     }
-    console.log("log in success");
     const token = jwt.sign({ userId: data.id, name: data.name, email: data.email }, secretKey, { expiresIn: '1h' });
     const refreshToken = jwt.sign({userId: data.id, name: data.name, email: data.email}, secretRefreshKey, { expiresIn: '1d' });
 
@@ -58,7 +57,6 @@ router.post("/login", (req, res) => {
 
 router.get("/test", (req, res) => {
   const password = "password";
-  // console.log("password: ", bcrypt.hashSync("password", 10))
   getUserWithEmail(req.body.email).then((data) => {
     if (!data) {
       return res.json("No results found");
