@@ -3,6 +3,10 @@ const { getUserWithEmail } = require("../db/queries/login");
 const { addUser } = require("../db/queries/addUser");
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+require("dotenv").config();
+const secretKey = process.env.AUTH_KEY;
+const secretRefreshKey = process.env.REFRESH_KEY;
 
 router.post("/signup", (req, res) => {
   const encryptedPassword = bcrypt.hashSync(req.body.password, 10)
@@ -35,9 +39,17 @@ router.post("/login", (req, res) => {
       return res.status(401).send("authentication failed");
     }
     console.log("log in success");
-    const currentUser = {id: data.id, name: data.name, email: data.email};
+    const token = jwt.sign({ userId: data.id, name: data.name, email: data.email }, secretKey, { expiresIn: '1h' });
+    const refreshToken = jwt.sign({userId: data.id, name: data.name, email: data.email}, secretRefreshKey, { expiresIn: '1d' });
+
+    // Include the token in the response
+    const currentUser = { id: data.id, name: data.name, email: data.email, accessToken: token, refreshToken };
     return res.json(currentUser);
   })
+  .catch((error) => {
+    console.error('Error:', error);
+    return res.status(500).send("Server Error");
+  });
 });
 
 router.get("/test", (req, res) => {

@@ -1,15 +1,15 @@
 const db = require("../index");
 
-const removeNote = function (noteID) {
+const removeNote = function (userId, noteID) {
   const queryString =`
     DELETE FROM notes
-    WHERE id = $1
+    WHERE owner_id = $1 AND id = $2
     RETURNING *
     ;
     `;
   return db
     .query(queryString, [
-      noteID
+      userId, noteID
     ])
     .then((result) => {
       return result.rows[0];

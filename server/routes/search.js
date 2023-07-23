@@ -1,12 +1,10 @@
 const express = require("express");
 const { searchNotes } = require("../db/queries/searchNotes");
 const router = express.Router();
+const authenticateToken = require("../jwtAuth");
 
-router.get("/", (req, res) => {
-  let userID = 1;
-  if (req.body.userID) {
-    userID = req.body.userID;
-  }
+router.get("/", authenticateToken, (req, res) => {
+  let userID = req.user.userId;
   const query = req.query.q;
   searchNotes(userID, query).then((data) => {
     if (!data) {

@@ -21,14 +21,15 @@ const getNotesById = function (userID, noteId) {
     SELECT *
     FROM notes
     WHERE owner_id = $1
+    AND id = $2
     `;
   return db
-    .query(queryString, [userID])
+    .query(queryString, [userID, noteId])
     .then((result) => {
       if (result.rows.length === 0) {
         return null;
       }
-      return result.rows.filter(note => note.id === Number(noteId))[0];
+      return result.rows[0];
     });
 };
 
