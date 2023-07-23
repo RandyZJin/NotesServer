@@ -32,7 +32,7 @@ router.put("/:id", authenticateToken, (req, res) => {
   console.log(req.body, req.params.id)
   const note = {
     id: req.params.id,
-    content: req.body.note
+    contents: req.body.note
   };
   updateNote(userID, note).then((data) => {
     if (!data) {
