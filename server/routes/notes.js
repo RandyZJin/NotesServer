@@ -5,16 +5,19 @@ const { updateNote, shareNote } = require("../db/queries/updateNote");
 const { removeNote } = require("../db/queries/removeNote");
 const router = express.Router();
 
-router.delete("/:id", (req, res) => {
-  console.log(req.body);
-  removeNote(req.body.noteId)
+const authenticateToken = require("../jwtAuth");
+
+router.delete("/:id", authenticateToken, (req, res) => {
+  let userID = req.user.userId;
+  removeNote(userID, req.body.noteId)
   .then(data => {
     res.send("Deleted!")
   })
 });
 
-router.post("/:id/share", (req, res) => {
-  shareNote(req.params.id)
+router.post("/:id/share", authenticateToken, (req, res) => {
+  let userId = req.user.userId;
+  shareNote(userId, req.params.id)
   .then((data) => {
     if (!data) {
       res.send("no notes found for user");
@@ -24,13 +27,14 @@ router.post("/:id/share", (req, res) => {
   });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", authenticateToken, (req, res) => {
+  let userID = req.user.userId;
   console.log(req.body, req.params.id)
   const note = {
     id: req.params.id,
     content: req.body.note
   };
-  updateNote(note).then((data) => {
+  updateNote(userID, note).then((data) => {
     if (!data) {
       res.send("note saving failed");
     } else {
@@ -39,12 +43,8 @@ router.put("/:id", (req, res) => {
   });
 });
 
-router.post("/", (req, res) => {
-  let userID = 1;
-  console.log(req.body)
-  if (req.body.userID) {
-    userID = req.body.userID;
-  }
+router.post("/", authenticateToken, (req, res) => {
+  let userID = req.user.userId;
   addNote(userID, req.body.note).then((data) => {
     if (!data) {
       res.send("note saving failed");
@@ -54,11 +54,8 @@ router.post("/", (req, res) => {
   });
 });
 
-router.get("/:id", (req, res) => {
-  let userID = 1;
-  if (req.body.userID) {
-    userID = req.body.userID;
-  }
+router.get("/:id", authenticateToken, (req, res) => {
+  let userID = req.user.userId;
   getNotesById(userID, req.params.id).then((data) => {
     if (!data) {
       res.send("no notes found for user");
@@ -68,11 +65,8 @@ router.get("/:id", (req, res) => {
   });
 });
 
-router.get("/", (req, res) => {
-  let userID = 1;
-  if (req.body.userID) {
-    userID = req.body.userID;
-  }
+router.get("/", authenticateToken, (req, res) => {
+  let userID = req.user.userId;
   getNotesForUser(userID).then((data) => {
     if (!data) {
       res.send("no notes found for user");
